@@ -4,6 +4,7 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY = 'ghcr.io/xcyrodilx'
+        DOCKER_DOMAIN = 'ghcr.io'
         IMAGE_TAG = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
         
         TF_DIR = 'terraform' // Variable for Terraform directory
@@ -51,7 +52,7 @@ pipeline {
             steps {
                 // Requires 'docker-registry-creds' credential and Docker CLI access
                 withCredentials([usernamePassword(credentialsId: 'docker-registry-creds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                    sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                    sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} ${DOCKER_DOMAIN}"
                     
                     dir(API_APP_DIR) {
                         sh "docker build -t ${DOCKER_REGISTRY}/bank-api:${IMAGE_TAG} ."
