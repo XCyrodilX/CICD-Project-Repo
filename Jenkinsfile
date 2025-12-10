@@ -3,7 +3,7 @@ pipeline {
     agent any 
 
     environment {
-        DOCKER_REGISTRY = 'ghcr.io/XCyrodilX'
+        DOCKER_REGISTRY = 'ghcr.io/xcyrodilx'
         IMAGE_TAG = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
         
         TF_DIR = 'terraform' // Variable for Terraform directory
@@ -66,6 +66,8 @@ pipeline {
                         sh "docker tag ${DOCKER_REGISTRY}/bank-web:${IMAGE_TAG} ${DOCKER_REGISTRY}/bank-web:latest"
                         sh "docker push ${DOCKER_REGISTRY}/bank-web:latest"
                     }
+
+            
                 }
             }
         }
