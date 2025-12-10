@@ -131,7 +131,7 @@ const DataUpdateForm = ({ children, id, getFunction, deleteFunction, updateFunct
 
   useEffect(() => {
     setIsFormChanged(JSON.stringify(formState) !== JSON.stringify(initialFormState));
-  }, [formState]);
+  }, [formState, initialFormState]);
 
   const handleIChange = (event) => {
     setFormState({ ...formState, [event.target.name]: event.target.value });
