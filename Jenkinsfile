@@ -3,7 +3,7 @@ pipeline {
     agent any 
 
     environment {
-        DOCKER_REGISTRY = 'your-dockerhub-username' 
+        DOCKER_REGISTRY = 'ghcr.io/XCyrodilX'
         IMAGE_TAG = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
         
         TF_DIR = 'terraform' // Variable for Terraform directory
