@@ -31,8 +31,10 @@ pipeline {
         stage('Build & Test Applications') {
             steps {
                 dir(API_APP_DIR) {
-                    sh './gradlew build' // Requires Java/JDK and Gradle
+                    // *** EDITED: Switched to Maven Wrapper (mvnw) for the Maven project structure ***
+                    sh './mvnw clean install -DskipTests' // Requires Java/JDK and Maven Wrapper (which uses Java)
                     sh 'echo "Running bank-api unit tests..."'
+                    sh './mvnw test' // Run tests explicitly
                     sh 'echo "bank-api tests passed successfully."'
                 }
                 
