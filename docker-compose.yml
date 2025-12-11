@@ -5,7 +5,7 @@ services:
     image: ghcr.io/xcyrodilx/bank-api:latest
     container_name: bank-api
     ports:
-      - "9090:8080" # Host 9090 -> Container 8080
+      - "9090:8080"
     restart: always
 
   bank-web:
@@ -19,4 +19,4 @@ services:
     restart: always
     environment:
       # Tells the frontend to connect to the backend using the Docker service name and internal port.
-      - API_URL=http://bank-api:8080
+      - API_URL= "http://localhost:9090/api/v1"
