@@ -17,3 +17,6 @@ services:
     depends_on:
       - bank-api
     restart: always
+    environment:
+      # Tells the frontend to connect to the backend using the Docker service name and internal port.
+      - API_URL=http://bank-api:8080
