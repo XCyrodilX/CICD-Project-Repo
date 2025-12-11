@@ -6,7 +6,7 @@ services:
     image: ghcr.io/xcyrodilx/bank-api:latest 
     container_name: bank-api
     ports:
-      - "9090:9090"
+      - "9090:8080"
     restart: always
 
   bank-web:
