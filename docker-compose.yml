@@ -19,4 +19,4 @@ services:
     restart: always
     environment:
       # Tells the frontend to connect to the backend using the Docker service name and internal port.
-      - API_URL= "http://localhost:9090/api/v1"
+      - REACT_APP_API_URL= "http://localhost:9090/api/v1"
