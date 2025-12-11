@@ -1,23 +1,17 @@
-version: '3.8' # Standard Compose specification version
+version: '3.8'
 
 services:
   bank-api:
-    # Use the image you pushed to GitHub Container Registry (GHCR)
-    image: ghcr.io/xcyrodilx/bank-api:latest 
+    image: ghcr.io/xcyrodilx/bank-api:latest
     container_name: bank-api
     ports:
-      - "9090:8080"
+      - "9090:8080" # Host 9090 -> Container 8080
     restart: always
 
   bank-web:
-    # Use the image you pushed to GHCR
     image: ghcr.io/xcyrodilx/bank-web:latest
     container_name: bank-web
-    # For deployment, the web app must use the service name of the API
-    environment:
-      # NOTE: This assumes your React app reads an environment variable named 
-      # REACT_APP_API_URL at RUNTIME (not build time).
-      - REACT_APP_API_URL=http://bank-api:8080/api/v1 
+    # REMOVED the problematic 'environment:' block
     ports:
       - "3000:80"
     depends_on:
