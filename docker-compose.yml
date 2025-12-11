@@ -1,19 +1,25 @@
-version: "28.3.2"
+version: '3.8' # Standard Compose specification version
 
 services:
   bank-api:
-    build: ./bank-api
+    # Use the image you pushed to GitHub Container Registry (GHCR)
+    image: ghcr.io/xcyrodilx/bank-api:latest 
     container_name: bank-api
     ports:
-      - "9090:9090" 
+      - "9090:9090"
+    restart: always
 
   bank-web:
-    build:
-      context: ./bank-web
-      args:
-        REACT_APP_API_URL: "http://localhost:9090/api/v1"
+    # Use the image you pushed to GHCR
+    image: ghcr.io/xcyrodilx/bank-web:latest
     container_name: bank-web
+    # For deployment, the web app must use the service name of the API
+    environment:
+      # NOTE: This assumes your React app reads an environment variable named 
+      # REACT_APP_API_URL at RUNTIME (not build time).
+      - REACT_APP_API_URL=http://bank-api:8080/api/v1 
     ports:
-      - "3000:80"    
+      - "3000:80"
     depends_on:
       - bank-api
+    restart: always
