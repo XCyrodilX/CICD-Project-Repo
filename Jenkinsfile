@@ -72,6 +72,26 @@ pipeline {
                 }
             }
         }
+        
+        // ***************************************************************
+        // *** NEW STAGE: DEPLOYMENT USING DOCKER COMPOSE ***
+        // ***************************************************************
+        stage('Deploy (Docker Compose)') {
+            steps {
+                // Pulls the latest images and runs the containers based on docker-compose.yml
+                // This assumes your docker-compose.yml uses 'image:' and not 'build:'.
+                
+                // Pulls the latest images
+                sh 'docker-compose pull' 
+                
+                // Stops/removes old containers and starts new ones in detached mode (-d)
+                // This uses the host port 9090 for the API and 3000 for the web app.
+                sh 'docker-compose up -d --remove-orphans' 
+                
+                echo "Deployment successful! Services are running on host ports 9090 (API) and 3000 (Web)."
+            }
+        }
+
 
         /*
         // STAGE 3: DEPLOY TO KUBERNETES
@@ -105,5 +125,3 @@ pipeline {
         */
     }
 }
-
-//Trigger
