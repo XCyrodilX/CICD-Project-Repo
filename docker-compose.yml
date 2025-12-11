@@ -9,14 +9,13 @@ services:
     restart: always
 
   bank-web:
-    image: ghcr.io/xcyrodilx/bank-web:latest
+    build:
+      context: ./bank-web
+      args:
+        REACT_APP_API_URL: "http://localhost:9090/api/v1"
     container_name: bank-web
-    # REMOVED the problematic 'environment:' block
     ports:
       - "3000:80"
     depends_on:
       - bank-api
     restart: always
-    environment:
-      # Tells the frontend to connect to the backend using the Docker service name and internal port.
-      - REACT_APP_API_URL= "http://localhost:9090/api/v1"
