@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bank-web
+  namespace: bank
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bank-web
+  template:
+    metadata:
+      labels:
+        app: bank-web
+    spec:
+      containers:
+        - name: bank-web
+          image: bank-web:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80   
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bank-web
+  namespace: bank
+spec:
+  selector:
+    app: bank-web
+  ports:
+    - name: http
+      port: 80        
+      targetPort: 80  
+  type: ClusterIP

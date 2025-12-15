@@ -8,7 +8,6 @@ pipeline {
         IMAGE_TAG = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
         
         TF_DIR = 'terraform' // Variable for Terraform directory
-        K8S_DIR = 'k8s'      // Variable for Kubernetes manifests directory
         
         WEB_APP_DIR = 'bank-web'
         API_APP_DIR = 'bank-api'
