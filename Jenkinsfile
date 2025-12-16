@@ -26,6 +26,15 @@ pipeline {
         }
 
         // ------------------------------------------------------------
+        // CHECK DOCKER (fail fast if Docker Desktop engine isn't reachable)
+        // ------------------------------------------------------------
+        stage('Check Docker') {
+            steps {
+                bat 'docker version'
+            }
+        }
+
+        // ------------------------------------------------------------
         // SET IMAGE TAG 
         // ------------------------------------------------------------
         stage('Set Image Tag') {
@@ -33,7 +42,7 @@ pipeline {
                 script {
                     env.IMAGE_TAG = bat(
                         returnStdout: true,
-                        script: 'git rev-parse --short HEAD'
+                        script: '@git rev-parse --short HEAD'
                     ).trim()
 
                     echo "Using IMAGE_TAG=${env.IMAGE_TAG}"
@@ -88,7 +97,8 @@ pipeline {
                     )
                 ]) {
 
-                    bat 'docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD% %DOCKER_DOMAIN%'
+                    // FIX (minor): quote vars to avoid weird parsing
+                    bat 'docker login -u "%DOCKER_USERNAME%" -p "%DOCKER_PASSWORD%" "%DOCKER_DOMAIN%"'
 
                     // ----- BANK API IMAGE -----
                     dir(API_APP_DIR) {
@@ -166,4 +176,5 @@ pipeline {
         }
     }
 }
+
 
