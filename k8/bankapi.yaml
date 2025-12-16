@@ -28,7 +28,6 @@ spec:
           ports:
             - containerPort: 9090
 
-          # ✅ TCP probes (NO actuator needed)
           startupProbe:
             tcpSocket:
               port: 9090

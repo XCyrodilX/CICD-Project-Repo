@@ -102,10 +102,13 @@ pipeline {
 
                     // ----- BANK API IMAGE -----
                     dir(API_APP_DIR) {
-                        bat "docker build -t %DOCKER_REGISTRY%/bank-api:%IMAGE_TAG% ."
-                        bat "docker push %DOCKER_REGISTRY%/bank-api:%IMAGE_TAG%"
-                        bat "docker tag %DOCKER_REGISTRY%/bank-api:%IMAGE_TAG% %DOCKER_REGISTRY%/bank-api:latest"
-                        bat "docker push %DOCKER_REGISTRY%/bank-api:latest"
+                        bat '''
+                        docker run --rm ^
+                        -v "%CD%":/app ^
+                        -w /app ^
+                        maven:3.9.5-eclipse-temurin-17 ^
+                        mvn -B clean test
+                        '''
                     }
 
                     // ----- BANK WEB IMAGE -----
