@@ -1,21 +1,18 @@
-version: '3.8'
-
+# retesting docker compose v2 syntax
 services:
   bank-api:
-    image: ghcr.io/xcyrodilx/bank-api:latest
-    container_name: bank-api
+    build: ./bank-api
+    # container_name: bank-api
     ports:
-      - "9090:9090"
-    restart: always
+      - "9090" 
 
   bank-web:
     build:
       context: ./bank-web
       args:
         REACT_APP_API_URL: "http://localhost:9090/api/v1"
-    container_name: bank-web
+    # container_name: bank-web
     ports:
-      - "3000:80"
+      - "3000:80"    
     depends_on:
       - bank-api
-    restart: always
