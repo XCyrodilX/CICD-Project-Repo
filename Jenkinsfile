@@ -1,6 +1,6 @@
 pipeline {
     // Runs on Windows Jenkins node
-    //testing
+    //test
     agent any 
 
     environment {
