@@ -93,17 +93,13 @@ pipeline {
     }
 }
 
-    post {
+   post {
         success {
-            echo " Deployment successful!"
-            echo "- Docker Compose:"
-            echo "    Web: http://localhost:3000"
-            echo "    API: http://localhost:9090"
+            echo "Deployment successful!"
+            bat "kubectl get svc -n bank" // This will show you the EXTERNAL-IP
+            echo "Look for the EXTERNAL-IP in the table above to access your app."
         }
         failure {
-            echo "Deployment failed check console log for details."
+            echo "Deployment failed. Check console log for details."
         }
     }
-}
-
-
