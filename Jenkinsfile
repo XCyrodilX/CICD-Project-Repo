@@ -21,19 +21,25 @@ pipeline {
             }
         }
 
-        /*
-        // STAGE 1: PROVISION INFRASTRUCTURE (TERRAFORM)
-        // This stage is commented out. Uncomment it and install the 'terraform' CLI tool to enable.
-        stage('Provision Infrastructure (Terraform)') {
-            steps {
-                dir(TF_DIR) {
-                    sh 'terraform init'
-                    sh 'terraform validate'
-                    sh 'terraform apply -auto-approve' 
-                }
+        stage('Terraform Provision') {
+    steps {
+        // This block injects the secrets you saved earlier
+        withCredentials([
+            string(credentialsId: 'AZURE_SUBSCRIPTION_ID', variable: 'ARM_SUBSCRIPTION_ID'),
+            string(credentialsId: 'AZURE_TENANT_ID',       variable: 'ARM_TENANT_ID'),
+            string(credentialsId: 'AZURE_CLIENT_ID',       variable: 'ARM_CLIENT_ID'),
+            string(credentialsId: 'AZURE_CLIENT_SECRET',   variable: 'ARM_CLIENT_SECRET')
+        ]) {
+            dir(TF_DIR) {
+                // We use 'bat' because your agent is Windows 11
+                bat 'terraform init'
+                // Tip: Use 'plan' first to see what will happen
+                bat 'terraform plan' 
+                bat 'terraform apply -auto-approve'
             }
         }
-        */
+    }
+}
 
         // ------------------------------------------------------------
         // BUILD & TEST APPLICATIONS; REMOVE OLD CONTAINERS
@@ -66,20 +72,26 @@ pipeline {
         // DEPLOY TO KUBERNETES AND VERIFY (DOCKER DESKTOP)
         // ------------------------------------------------------------
         stage('Deploy to Kubernetes') {
-            steps {
-                bat '''
-                kubectl config use-context docker-desktop
-                kubectl apply -f k8/namespace.yaml
-                kubectl apply -f k8/bank-api.yaml
-                kubectl apply -f k8/bank-web.yaml
-                kubectl rollout status deployment/bank-api -n bank
-                kubectl rollout status deployment/bank-web -n bank
-                kubectl get pods -n bank
-                kubectl get svc -n bank
-                '''
-            }
+    steps {
+        withCredentials([
+            string(credentialsId: 'AZURE_SUBSCRIPTION_ID', variable: 'ARM_SUBSCRIPTION_ID'),
+            string(credentialsId: 'AZURE_TENANT_ID',       variable: 'ARM_TENANT_ID'),
+            string(credentialsId: 'AZURE_CLIENT_ID',       variable: 'ARM_CLIENT_ID'),
+            string(credentialsId: 'AZURE_CLIENT_SECRET',   variable: 'ARM_CLIENT_SECRET')
+        ]) {
+            bat '''
+            :: Log in to Azure and get the credentials for the new AKS cluster
+            az login --service-principal -u %ARM_CLIENT_ID% -p %ARM_CLIENT_SECRET% --tenant %ARM_TENANT_ID%
+            az aks get-credentials --resource-group my-jenkins-project-rg --name my-aks-cluster --overwrite-existing
+            
+            :: Now run your deployments
+            kubectl apply -f k8/namespace.yaml
+            kubectl apply -f k8/bank-api.yaml
+            kubectl apply -f k8/bank-web.yaml
+            '''
         }
     }
+}
 
     post {
         success {
