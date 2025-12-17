@@ -23,11 +23,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: bank-api
+  name: bank-web
   namespace: bank
 spec:
-  selector:
-    app: bank-api
+  type: LoadBalancer  # <--- Change 'NodePort' or 'ClusterIP' to this
   ports:
-    - port: 9090
-      targetPort: 9090
+    - port: 80        # The port accessible from the internet
+      targetPort: 3000 # The port your app runs on inside the container
+  selector:
+    app: bank-web
